@@ -1,2 +1,11 @@
-<h1>Practices#new</h1>
-<p>Find me in app/views/practices/new.html.erb</p>
+<h1><%= @practice.persisted? ? "Modifier la pratique" : "Nouvelle pratique" %></h1>
+
+<%= simple_form_for @practice do |f| %>
+  <div class="form-group">
+    <%= f.input :name, label: "Nom de la pratique", input_html: { class: "form-control" } %>
+  </div>
+
+  <%= f.button :submit, class: "btn btn-primary" %>
+<% end %>
+
+<%= link_to "Annuler", practices_path, class: "btn btn-secondary" %>

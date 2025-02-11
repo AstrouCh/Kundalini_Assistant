@@ -1,2 +1,14 @@
-<h1>Postures#new</h1>
-<p>Find me in app/views/postures/new.html.erb</p>
+<h1>Ajouter une posture à "<%= @practice.name %>"</h1>
+
+<%= simple_form_for [@practice, @posture] do |f| %>
+  <div class="form-group">
+    <%= f.input :name, label: "Nom de la posture", input_html: { class: "form-control" } %>
+    <%= f.input :time, label: "Temps de la posture (en secondes)", input_html: { class: "form-control" } %>
+    <%= f.input :holding_breath_ending, label: "Fin de rétention ?", as: :boolean %>
+    <%= f.input :holding_breath_time, label: "Temps de rétention (en secondes)", input_html: { class: "form-control" } %>
+  </div>
+
+  <%= f.button :submit, class: "btn btn-primary" %>
+<% end %>
+
+<%= link_to "Annuler", practice_path(@practice), class: "btn btn-secondary" %>

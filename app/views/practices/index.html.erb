@@ -1,2 +1,12 @@
-<h1>Practices#index</h1>
-<p>Find me in app/views/practices/index.html.erb</p>
+<h1>Mes pratiques</h1>
+<%= link_to "Créer une nouvelle pratique", new_practice_path, class: "btn btn-success" %>
+
+<ul>
+  <% @practices.each do |practice| %>
+    <li>
+      <%= link_to practice.name, practice_path(practice) %>
+      <%= link_to "Modifier", edit_practice_path(practice), class: "btn btn-warning" %>
+      <%= link_to "Supprimer", practice_path(practice), data: { confirm: "Es-tu sûr ?", method: :delete }, class: "btn btn-danger" %>
+    </li>
+  <% end %>
+</ul>

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :practices do
-    resources :postures, only: [:index, :new, :create]
+    resources :postures
   end
 
   resources :postures, only: [:show, :edit, :update, :destroy]

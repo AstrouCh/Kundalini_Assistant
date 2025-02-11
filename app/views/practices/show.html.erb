@@ -1,2 +1,11 @@
-<h1>Practices#show</h1>
-<p>Find me in app/views/practices/show.html.erb</p>
+<h1><%= @practice.name %></h1>
+
+<h2>Postures de cette pratique :</h2>
+<ul>
+  <% @practice.postures.each do |posture| %>
+    <li><%= posture.name %> - <%= posture.time %> secondes</li>
+  <% end %>
+</ul>
+
+<%= link_to "Ajouter une posture", new_practice_posture_path(@practice), class: "btn btn-success" %>
+<%= link_to "Retour à mes pratiques", practices_path, class: "btn btn-secondary" %>

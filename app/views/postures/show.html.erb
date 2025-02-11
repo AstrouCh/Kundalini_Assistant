@@ -1,2 +1,15 @@
-<h1>Postures#show</h1>
-<p>Find me in app/views/postures/show.html.erb</p>
+<h1><%= @posture.name %></h1>
+
+<p>
+  <strong>Temps de la posture :</strong> <%= @posture.time %> secondes
+</p>
+<p>
+  <strong>Temps de rétention :</strong> <%= @posture.holding_breath_time %> secondes
+</p>
+<p>
+  <strong>Rétention à la fin :</strong> <%= @posture.holding_breath_ending ? "Oui" : "Non" %>
+</p>
+
+<%= link_to "Retour à la pratique", practice_path(@practice), class: "btn btn-secondary" %>
+<%= link_to "Modifier", edit_practice_posture_path(@practice, @posture), class: "btn btn-warning" %>
+<%= link_to "Supprimer", practice_posture_path(@practice, @posture), method: :delete, data: { confirm: "Êtes-vous sûr ?" }, class: "btn btn-danger" %>

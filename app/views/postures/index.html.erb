@@ -1,2 +1,28 @@
-<h1>Postures#index</h1>
-<p>Find me in app/views/postures/index.html.erb</p>
+<h1>Postures de "<%= @practice.name %>"</h1>
+
+<%= link_to "Ajouter une posture", new_practice_posture_path(@practice), class: "btn btn-success" %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Temps</th>
+      <th>Rétention</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @practice.postures.each do |posture| %>
+      <tr>
+        <td><%= posture.name %></td>
+        <td><%= posture.time %> secondes</td>
+        <td><%= posture.holding_breath_ending ? "Oui" : "Non" %></td>
+        <td>
+          <%= link_to "Voir", practice_posture_path(@practice, posture), class: "btn btn-info" %>
+          <%= link_to "Modifier", edit_practice_posture_path(@practice, posture), class: "btn btn-warning" %>
+          <%= link_to "Supprimer", practice_posture_path(@practice, posture), method: :delete, data: { confirm: "Êtes-vous sûr ?" }, class: "btn btn-danger" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
