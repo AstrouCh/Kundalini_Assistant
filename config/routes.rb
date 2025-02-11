@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
+  resources :practices do
+    resources :postures, only: [:index, :new, :create]
+  end
+
+  resources :postures, only: [:show, :edit, :update, :destroy]
+
   devise_for :users
+
   root to: "pages#home"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
