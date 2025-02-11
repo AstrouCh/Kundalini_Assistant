@@ -1,7 +1,6 @@
 class Practice < ApplicationRecord
-  validates :name, presence: true
-  validates :name, uniqueness: true
-  validates :name, length: { in: 3..20 }
+  validates :name, presence: true, uniqueness: true, length: { in: 3..20 }
 
-  has_many :postures
+  has_many :postures, dependent: :destroy
+  belongs_to :user
 end

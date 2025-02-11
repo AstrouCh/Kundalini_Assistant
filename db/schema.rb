@@ -10,9 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_05_154526) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_11_123451) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "postures", force: :cascade do |t|
+    t.string "name"
+    t.integer "time"
+    t.boolean "holding_breath_ending", default: false
+    t.integer "holding_breath_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "practice_id"
+    t.index ["practice_id"], name: "index_postures_on_practice_id"
+  end
+
+  create_table "practices", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_practices_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -25,4 +44,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_05_154526) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "postures", "practices"
+  add_foreign_key "practices", "users"
 end
