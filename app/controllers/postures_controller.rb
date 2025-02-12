@@ -28,7 +28,7 @@ class PosturesController < ApplicationController
 
   def update
     if @posture.update(posture_params)
-      redirect_to @posture, notice: "Posture mise à jour."
+      redirect_to practice_postures_path(@posture.practice), notice: "Posture mise à jour."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -43,6 +43,7 @@ class PosturesController < ApplicationController
 
   def set_posture
     @posture = Posture.find(params[:id])
+    @practice = @posture.practice  # On récupère la practice associée
   end
 
   def set_practice

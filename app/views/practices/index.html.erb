@@ -10,3 +10,10 @@
     </li>
   <% end %>
 </ul>
+
+<% if user_signed_in? %>
+  <%= link_to "Créer une séance", new_practice_path, class: "btn btn-primary" %>
+<% else %>
+  <%= link_to "Inscrivez-vous pour créer une séance", new_user_registration_path, class: "btn btn-success" %>
+  <p>Déjà membre ? <%= link_to "Connectez-vous", new_user_session_path %></p>
+<% end %>
