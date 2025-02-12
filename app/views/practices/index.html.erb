@@ -1,19 +1,23 @@
-<h1>Mes pratiques</h1>
-<%= link_to "Créer une nouvelle pratique", new_practice_path, class: "btn btn-success" %>
+<h1>Pratiques</h1>
 
-<ul>
-  <% @practices.each do |practice| %>
-    <li>
-      <%= link_to practice.name, practice_path(practice) %>
-      <%= link_to "Modifier", edit_practice_path(practice), class: "btn btn-warning" %>
-      <%= link_to "Supprimer", practice_path(practice), data: { confirm: "Es-tu sûr ?", method: :delete }, class: "btn btn-danger" %>
-    </li>
-  <% end %>
-</ul>
+<%= link_to "Créer ma pratique", new_practice_path, class: "btn btn-primary" %>
 
 <% if user_signed_in? %>
-  <%= link_to "Créer une séance", new_practice_path, class: "btn btn-primary" %>
-<% else %>
-  <%= link_to "Inscrivez-vous pour créer une séance", new_user_registration_path, class: "btn btn-success" %>
-  <p>Déjà membre ? <%= link_to "Connectez-vous", new_user_session_path %></p>
+  <h2>Mes pratiques</h2>
+  <ul>
+    <% @practices.where(category: 'personal', user_id: current_user.id).each do |practice| %>
+      <li>
+        <%= link_to practice.name, practice_path(practice) %>
+        <%= link_to "Modifier", edit_practice_path(practice), class: "btn btn-warning btn-sm" %>
+        <%= link_to "Supprimer", practice_path(practice), method: :delete, data: { confirm: "Es-tu sûr de vouloir supprimer cette pratique ?" }, class: "btn btn-danger btn-sm" %>
+      </li>
+    <% end %>
+  </ul>
 <% end %>
+
+<h2>Pratiques suggérées</h2>
+<ul>
+  <% @practices.where.not(category: 'personal').each do |practice| %>
+    <li><%= link_to practice.name, practice_path(practice) %></li>
+  <% end %>
+</ul>

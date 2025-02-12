@@ -1,6 +1,7 @@
 class PracticesController < ApplicationController
   before_action :set_practice, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :authenticate_user!, except: [:index, :show]
+
 
   def index
     @practices = Practice.all
@@ -14,15 +15,16 @@ class PracticesController < ApplicationController
   end
 
   def create
-    @practice = Practice.new(practice_params)
-    @practice.user = current_user  # Si un utilisateur est connecté
+    @practice = current_user.practices.build(practice_params)
+    @practice.category = 'personal'  # Assigner la catégorie "personal" par défaut
 
     if @practice.save
-      redirect_to @practice, notice: "Votre séance a été créée avec succès."
+      redirect_to @practice, notice: 'Pratique créée avec succès.'
     else
-      render :new, status: :unprocessable_entity
+      render :new
     end
   end
+
 
   def edit
   end
