@@ -1,7 +1,6 @@
 class PracticesController < ApplicationController
   before_action :set_practice, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!, except: [:index, :show]
-
+  before_action :authenticate_user!, only: [:create, :edit, :update, :destroy]  # L'authentification est nécessaire pour créer, modifier, ou supprimer
 
   def index
     @practices = Practice.all
@@ -15,19 +14,41 @@ class PracticesController < ApplicationController
   end
 
   def create
-    @practice = current_user.practices.build(practice_params)
-    @practice.category = 'personal'  # Assigner la catégorie "personal" par défaut
+    if user_signed_in?
+      # Utilisateur connecté → enregistrement en base avec catégorie "personal"
+      @practice = current_user.practices.build(practice_params)
+      @practice.category = "personal"
 
-    if @practice.save
-      redirect_to @practice, notice: 'Pratique créée avec succès.'
+      if @practice.save
+        redirect_to practices_path, notice: "Votre pratique a été créée avec succès."
+      else
+        render :new, status: :unprocessable_entity
+      end
     else
-      render :new
+      # Utilisateur non connecté → stockage en session
+      session[:temporary_practices] ||= []
+      session[:temporary_practices] << practice_params.to_h
+
+      redirect_to practices_path, notice: "Votre pratique a été ajoutée temporairement. Connectez-vous pour l'enregistrer définitivement."
     end
   end
 
 
   def edit
+    @practice = Practice.find(params[:id])
+
+    # Si c'est une pratique suggérée, créer une copie pour l'utilisateur connecté
+    if @practice.category != 'personal' && user_signed_in?
+      @practice = @practice.dup  # Créer une copie de la pratique suggérée
+      @practice.user = current_user # Assigner cette pratique à l'utilisateur connecté
+      @practice.category = 'personal' # La pratique devient personnelle
+
+      # Sauvegarde de la pratique en session si on veut aussi la garder temporairement
+      session[:temporary_practices] ||= []
+      session[:temporary_practices] << @practice.attributes
+    end
   end
+
 
   def update
     if @practice.update(practice_params)

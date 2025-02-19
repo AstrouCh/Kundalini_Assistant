@@ -1,23 +1,21 @@
 Rails.application.routes.draw do
+  # Gestion des pratiques et postures en tant que ressources imbriquées
   resources :practices do
-    resources :postures
+    resources :postures # Pas besoin de spécifier les actions, toutes seront imbriquées
   end
 
-  resources :postures, only: [:show, :edit, :update, :destroy]
+  resources :postures, only: [:show, :edit, :update, :destroy] # Gestion individuelle des postures
 
+  # Routes pour les pratiques temporaires en session (pour les utilisateurs non connectés)
+  post "/sessions/add_practice", to: "sessions#add_practice", as: "add_temporary_practice"
+  delete "/sessions/clear_practices", to: "sessions#clear_practices", as: "clear_temporary_practices"
+
+  # Routes pour l'authentification avec Devise
   devise_for :users
 
+  # Définition de la page d'accueil
   root to: "pages#home"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  # Route pour vérifier le statut de l'application
   get "up" => "rails/health#show", as: :rails_health_check
-
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  # Defines the root path route ("/")
-  # root "posts#index"
 end

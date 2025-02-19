@@ -4,20 +4,39 @@
 
 <% if user_signed_in? %>
   <h2>Mes pratiques</h2>
+  <% user_practices = @practices.where(category: 'personal', user_id: current_user.id) %>
+  <% if user_practices.any? %>
+    <ul>
+      <% user_practices.each do |practice| %>
+        <li>
+          <%= link_to practice.name, practice_path(practice) %>
+          <%= link_to "Modifier", edit_practice_path(practice), class: "btn btn-sm btn-warning" %>
+          <%= link_to "Supprimer", practice_path(practice), method: :delete, data: { confirm: "Es-tu sûr(e) ?" }, class: "btn btn-sm btn-danger" %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>Aucune pratique personnelle pour l’instant.</p>
+  <% end %>
+<% end %>
+
+<% if session[:temporary_practices].present? %>
+  <h2>Pratiques temporaires</h2>
   <ul>
-    <% @practices.where(category: 'personal', user_id: current_user.id).each do |practice| %>
-      <li>
-        <%= link_to practice.name, practice_path(practice) %>
-        <%= link_to "Modifier", edit_practice_path(practice), class: "btn btn-warning btn-sm" %>
-        <%= link_to "Supprimer", practice_path(practice), method: :delete, data: { confirm: "Es-tu sûr de vouloir supprimer cette pratique ?" }, class: "btn btn-danger btn-sm" %>
-      </li>
+    <% session[:temporary_practices].each do |practice| %>
+      <li><%= practice["name"] %> (non enregistrée)</li>
     <% end %>
   </ul>
 <% end %>
 
 <h2>Pratiques suggérées</h2>
 <ul>
-  <% @practices.where.not(category: 'personal').each do |practice| %>
-    <li><%= link_to practice.name, practice_path(practice) %></li>
+  <% suggested_practices = @practices.where.not(category: 'personal') %>
+  <% if suggested_practices.any? %>
+    <% suggested_practices.each do |practice| %>
+      <li><%= link_to practice.name, practice_path(practice) %></li>
+    <% end %>
+  <% else %>
+    <p>Aucune pratique suggérée pour l’instant.</p>
   <% end %>
 </ul>

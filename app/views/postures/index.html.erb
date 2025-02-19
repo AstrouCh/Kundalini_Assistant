@@ -12,18 +12,17 @@
     </tr>
   </thead>
   <tbody>
-    <% @practice.postures.each do |posture| %>
-      <tr>
-        <td><%= posture.name %></td>
-        <td><%= posture.time %> secondes</td>
-        <td><%= posture.holding_breath_ending ? "Oui" : "Non" %></td>
-        <td>
-          <%= link_to "Voir", practice_posture_path(@practice, posture), class: "btn btn-info" %>
-          <%= link_to "Modifier", edit_practice_posture_path(@practice, posture), class: "btn btn-warning" %>
-          <%= link_to "Supprimer", practice_posture_path(@practice, posture), method: :delete, data: { confirm: "Êtes-vous sûr ?" }, class: "btn btn-danger" %>
-        </td>
-      </tr>
-    <% end %>
+    <% @postures.each do |posture| %>
+  <tr>
+    <td><%= posture.holding_breath_ending ? "Oui" : "Non" %></td>
+    <td>
+      <%= link_to "Voir", practice_posture_path(@practice, posture), class: "btn btn-info" %>
+      <%= link_to "Modifier", edit_practice_posture_path(@practice, posture), class: "btn btn-warning" %>
+      <%= link_to "Supprimer", practice_posture_path(@practice, posture), method: :delete, data: { confirm: "Êtes-vous sûr ?" }, class: "btn btn-danger" %>
+    </td>
+  </tr>
+<% end %>
+
   </tbody>
 </table>
 
