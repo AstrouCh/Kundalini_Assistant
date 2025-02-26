@@ -14,12 +14,43 @@ class PosturesController < ApplicationController
   end
 
   def create
-    @posture = @practice.postures.build(posture_params)
+    if user_signed_in?
+      if @practice.category != 'personal'
+        # Dupliquer la pratique suggérée et l'assigner à l'utilisateur
+        @practice = @practice.dup
+        @practice.user = current_user
+        @practice.category = 'personal'
+        @practice.save
+      end
 
-    if @posture.save
-      redirect_to practice_postures_path(@practice), notice: "Posture ajoutée avec succès."
+      # Ajouter la posture à la pratique (qu'elle soit dupliquée ou non)
+      @posture = @practice.postures.build(posture_params)
+
+      if @posture.save
+        redirect_to practice_postures_path(@practice), notice: "Posture ajoutée avec succès."
+      else
+        render :new, status: :unprocessable_entity
+      end
+
     else
-      render :new, status: :unprocessable_entity
+      # Stocker la pratique modifiée en session
+      session[:temporary_practices] ||= []
+
+      # Vérifier si une copie existe déjà en temporaire
+      existing_practice = session[:temporary_practices].find { |p| p["id"] == @practice.id }
+
+      if existing_practice
+        # Ajouter la posture à la copie existante
+        existing_practice["postures"] ||= []
+        existing_practice["postures"] << posture_params
+      else
+        # Créer une nouvelle copie avec la posture ajoutée
+        new_practice = @practice.attributes.except("id", "created_at", "updated_at")
+        new_practice["postures"] = [posture_params]
+        session[:temporary_practices] << new_practice
+      end
+
+      redirect_to new_user_session_path, notice: "Connecte-toi pour enregistrer ta séance modifiée."
     end
   end
 

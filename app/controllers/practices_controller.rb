@@ -1,6 +1,6 @@
 class PracticesController < ApplicationController
   before_action :set_practice, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!, only: [:create, :edit, :update, :destroy]  # L'authentification est nécessaire pour créer, modifier, ou supprimer
+  before_action :authenticate_user!, only: [:edit, :update, :destroy]  # L'authentification est nécessaire pour créer, modifier, ou supprimer
 
   def index
     @practices = Practice.all
@@ -15,21 +15,18 @@ class PracticesController < ApplicationController
 
   def create
     if user_signed_in?
-      # Utilisateur connecté → enregistrement en base avec catégorie "personal"
       @practice = current_user.practices.build(practice_params)
-      @practice.category = "personal"
-
+      @practice.category ||= 'personal'
       if @practice.save
-        redirect_to practices_path, notice: "Votre pratique a été créée avec succès."
+        redirect_to @practice, notice: "Pratique créée avec succès."
       else
         render :new, status: :unprocessable_entity
       end
     else
-      # Utilisateur non connecté → stockage en session
+      # Stocker en session
       session[:temporary_practices] ||= []
-      session[:temporary_practices] << practice_params.to_h
-
-      redirect_to practices_path, notice: "Votre pratique a été ajoutée temporairement. Connectez-vous pour l'enregistrer définitivement."
+      session[:temporary_practices] << practice_params
+      redirect_to practices_path, notice: "Pratique enregistrée temporairement. Connecte-toi pour la sauvegarder."
     end
   end
 

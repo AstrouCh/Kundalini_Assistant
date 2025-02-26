@@ -14,7 +14,7 @@
   <tbody>
     <% @postures.each do |posture| %>
   <tr>
-    <td><%= posture.holding_breath_ending ? "Oui" : "Non" %></td>
+    <td><%= posture.name %></td>
     <td>
       <%= link_to "Voir", practice_posture_path(@practice, posture), class: "btn btn-info" %>
       <%= link_to "Modifier", edit_practice_posture_path(@practice, posture), class: "btn btn-warning" %>
